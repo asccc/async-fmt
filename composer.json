@@ -1,0 +1,16 @@
+{
+    "name": "asccc/amphp-fmt",
+    "description": "Async CodeFormatter for de-community.de",
+    "type": "project",
+    "require": {
+        "amphp/parallel": "^1.4",
+        "amphp/file": "^1.0",
+        "amphp/http-server": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "DevCom\\Fmt\\": "src/"
+        }
+    },
+    "license": "MIT"
+}
