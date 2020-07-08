@@ -24,7 +24,7 @@ final class PregParser implements Parser
     private const RE_SPLIT = '/\[(?:\\/code|code(=\w+|(?:\s+\w+=(?:"[^"]*"|\S+))*))\]/i';
 
     /** pattern used to tokenize attributes */
-    private const RE_ATTRS = '/\A\s*(\w+)=("[^"]*"|\S+)/';
+    private const RE_ATTRS = '/\G\s*(\w+)=("[^"]*"|\S+)/';
 
     /**
      * {@inheritdoc}
@@ -56,10 +56,8 @@ final class PregParser implements Parser
         // 3 => text
         // 4 => ...
 
-        $split = preg_split(
-            self::RE_SPLIT, $textData, -1,
-            PREG_SPLIT_DELIM_CAPTURE
-        );
+        $split = preg_split(self::RE_SPLIT, $textData, -1,
+            PREG_SPLIT_DELIM_CAPTURE);
 
         $count = \count($split);
         if (0 === $count) {
@@ -107,17 +105,14 @@ final class PregParser implements Parser
         $offset = 0;
         $length = \strlen($attrs);
         while ($offset < $length) {
-            if (!preg_match(
-                self::RE_ATTRS, $attrs, $m, 0,
-                PREG_OFFSET_CAPTURE, $offset
-            )) {
+            if (!preg_match(self::RE_ATTRS, $attrs, $m, 0, $offset)) {
                 // we could throw here, but the text-input is in most
                 // cases provided by users. so we just discard it
                 break;
             }
 
-            $attrMap[$m[1][0]] = $this->parseAttr($m[2][0]);
-            $offset = $m[0][1];
+            $attrMap[$m[1]] = $this->parseAttr($m[2]);
+            $offset += \strlen($m[0]);
         }
 
         return $attrMap;
